@@ -1,7 +1,9 @@
-from django.urls import path
-from . import marketseer_api, views
+
+from django.urls import path, include
+from .views import StockForecastingView
+
 
 urlpatterns = [
-	path('data/', marketseer_api.datarequest, name='datarequest'),
-	path('', views.index, name='index'),
+	path('api-auth', include('rest_framework.urls')),
+	path('<str:stock_symbol>', StockForecastingView.as_view(), name='stockforecast'),
 ]
