@@ -1,4 +1,4 @@
-from forecastingbackend.models import DailyTimeseriesUnadjusted, Stock
+from forecastingbackend.models import WeeklyTimeseriesUnadjusted, Stock
 from forecastingbackend.financial_data import save_stock_data
 from forecastingbackend.global_data import get_stock_info_data
 
@@ -22,4 +22,4 @@ def check_stock_exists_database(stock_ticker):
 
 
 def get_stock_data(stock_ticker):
-	return DailyTimeseriesUnadjusted.objects.filter(daily_symbol=stock_ticker).order_by('cobdate_partition')
+	return WeeklyTimeseriesUnadjusted.objects.filter(weekly_symbol=stock_ticker).order_by('cobdate_partition')

@@ -8,18 +8,20 @@
 from django.db import models
 
 
-class DailyTimeseriesUnadjusted(models.Model):
-    daily_symbol = models.CharField(max_length=10)
+class WeeklyTimeseriesUnadjusted(models.Model):
+    weekly_symbol = models.CharField(max_length=10)
     stock_open = models.DecimalField(max_digits=10, decimal_places=4)
     stock_high = models.DecimalField(max_digits=10, decimal_places=4)
     stock_low = models.DecimalField(max_digits=10, decimal_places=4)
     stock_close = models.DecimalField(max_digits=10, decimal_places=4)
+    stock_adj_close = models.DecimalField(max_digits=10, decimal_places=4)
     stock_volume = models.BigIntegerField()
+    dividend_amount = models.DecimalField(max_digits=10, decimal_places=4)
     cobdate_partition = models.DateField()
 
     class Meta:
         managed = False
-        db_table = 'daily_timeseries_unadjusted'
+        db_table = 'weekly_timeseries_unadjusted'
 
 
 class Stock(models.Model):

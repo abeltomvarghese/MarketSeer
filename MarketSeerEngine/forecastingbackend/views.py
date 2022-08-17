@@ -14,9 +14,12 @@ class StockForecastingView(APIView):
 		message_prompt = check_stock_exists_database(stock_symbol)
 		forecasted_data_dict = get_forecast_data(stock_symbol, ml_model) if message_prompt == 'stock saved' else None
 
-		json.dumps(forecasted_data_dict, indent=4)
 
-		return Response(forecasted_data_dict)
+		forecasted_json = json.dumps(forecasted_data_dict, indent=4)
+		forecasted_json = json.loads(forecasted_json)
+		print(forecasted_json)
+
+		return Response(forecasted_json)
 
 
 

@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import json
 
 from forecastingbackend.data_queries import get_stock_data
 from forecastingbackend.HPOAlgorithms.HPOStrategy.GridSearchHPO import GridSearchHPO
@@ -13,7 +14,7 @@ from sklearn.model_selection import TimeSeriesSplit
 
 def prepare_data(raw_data):
 	df = pd.DataFrame(list(
-		raw_data.values('daily_symbol', 'stock_open', 'stock_high', 'stock_low', 'stock_close', 'stock_volume',
+		raw_data.values('weekly_symbol', 'stock_open', 'stock_high', 'stock_low', 'stock_close', 'stock_adj_close','stock_volume', 'dividend_amount',
 						'cobdate_partition')))
 
 	df['cobdate_partition'] = pd.to_datetime(df['cobdate_partition'])
@@ -21,16 +22,16 @@ def prepare_data(raw_data):
 	df['rec_month'] = df['cobdate_partition'].dt.month
 	df['rec_day'] = df['cobdate_partition'].dt.day
 
-	split_index = round(0.6 * len(df.index))
+	split_index = round(0.9 * len(df.index))
 	training_data = df[:split_index]
 	testing_data = df[split_index:]
 
 	training_x_data = training_data[
-		['rec_year', 'rec_month', 'rec_day', 'stock_open', 'stock_high', 'stock_low', 'stock_volume']]
+		['rec_year', 'rec_month', 'rec_day', 'stock_open', 'stock_high', 'stock_low', 'stock_adj_close', 'stock_volume', 'dividend_amount']]
 	training_y_data = training_data['stock_close']
 
 	test_x_data = testing_data[
-		['rec_year', 'rec_month', 'rec_day', 'stock_open', 'stock_high', 'stock_low', 'stock_volume']]
+		['rec_year', 'rec_month', 'rec_day', 'stock_open', 'stock_high', 'stock_low', 'stock_adj_close', 'stock_volume', 'dividend_amount']]
 	test_y_data = testing_data['stock_close']
 
 	return training_x_data, training_y_data, test_x_data, test_y_data
@@ -123,7 +124,6 @@ def smape(actual_data, predicted_data):
 
 def get_forecast_data(stock_symbol, ml_model):
 	the_data = get_stock_data(stock_symbol)
-
 	training_x_data, training_y_data, test_x_data, test_y_data = prepare_data(the_data)
 
 	gs_tuned_params, rs_tuned_params, bayes_tuned_params, hyper_tuned_params, optuna_tuned_params = get_tuned_parameters(ml_model, training_x_data, training_y_data)
