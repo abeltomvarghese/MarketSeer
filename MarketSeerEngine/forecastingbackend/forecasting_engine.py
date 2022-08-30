@@ -8,6 +8,7 @@ from forecastingbackend.HPOAlgorithms.HPOStrategy.RandomSearchHPO import RandomS
 from forecastingbackend.HPOAlgorithms.HPOStrategy.BayesianHPO import BayesianHPO
 from forecastingbackend.HPOAlgorithms.HPOStrategy.HyperoptHPO import HyperoptHPO
 from forecastingbackend.HPOAlgorithms.HPOStrategy.OptunaHPO import OptunaHPO
+from forecastingbackend.HPOAlgorithms.HPOContext.HPOContext import HPOContext
 from forecastingbackend.MLModels.ModelConcreteBuilders.base_model_generator import get_base_models, get_full_model
 
 from sklearn.model_selection import TimeSeriesSplit
@@ -38,11 +39,21 @@ def prepare_data(raw_data):
 
 
 def get_tuned_parameters(ml_model, training_x_data, training_y_data):
-	gs_hpo = GridSearchHPO()
-	rs_hpo = RandomSearchHPO()
-	b_hpo = BayesianHPO()
-	hyper_hpo = HyperoptHPO()
-	optuna_hpo = OptunaHPO()
+	gs_context = HPOContext(GridSearchHPO())
+
+	rs_context = HPOContext(RandomSearchHPO())
+
+	bayes_context = HPOContext(BayesianHPO())
+
+	hyper_context = HPOContext(HyperoptHPO())
+
+	optuna_context = HPOContext(OptunaHPO())
+
+	# gs_hpo = GridSearchHPO()
+	# rs_hpo = RandomSearchHPO()
+	# b_hpo = BayesianHPO()
+	# hyper_hpo = HyperoptHPO()
+	# optuna_hpo = OptunaHPO()
 
 	gs_tuned_params = None
 	rs_tuned_params = None
@@ -52,7 +63,7 @@ def get_tuned_parameters(ml_model, training_x_data, training_y_data):
 
 	while True:
 		try:
-			gs_tuned_params = gs_hpo.get_tuned_parameters(model_type=ml_model, x_data=training_x_data,
+			gs_tuned_params = gs_context.get_tuned_parameters(model_type=ml_model, x_data=training_x_data,
 														  y_data=training_y_data)
 			break
 		except ValueError:
@@ -60,7 +71,7 @@ def get_tuned_parameters(ml_model, training_x_data, training_y_data):
 
 	while True:
 		try:
-			rs_tuned_params = rs_hpo.get_tuned_parameters(model_type=ml_model, x_data=training_x_data,
+			rs_tuned_params = rs_context.get_tuned_parameters(model_type=ml_model, x_data=training_x_data,
 														  y_data=training_y_data)
 			break
 		except ValueError:
@@ -68,7 +79,7 @@ def get_tuned_parameters(ml_model, training_x_data, training_y_data):
 
 	while True:
 		try:
-			bayes_tuned_params = b_hpo.get_tuned_parameters(model_type=ml_model, x_data=training_x_data,
+			bayes_tuned_params = bayes_context.get_tuned_parameters(model_type=ml_model, x_data=training_x_data,
 															y_data=training_y_data)
 			break
 		except ValueError:
@@ -76,7 +87,7 @@ def get_tuned_parameters(ml_model, training_x_data, training_y_data):
 
 	while True:
 		try:
-			hyper_tuned_params = hyper_hpo.get_tuned_parameters(model_type=ml_model, x_data=training_x_data,
+			hyper_tuned_params = hyper_context.get_tuned_parameters(model_type=ml_model, x_data=training_x_data,
 																y_data=training_y_data)
 			break
 		except ValueError:
@@ -84,7 +95,7 @@ def get_tuned_parameters(ml_model, training_x_data, training_y_data):
 
 	while True:
 		try:
-			optuna_tuned_params = optuna_hpo.get_tuned_parameters(model_type=ml_model, x_data=training_x_data,
+			optuna_tuned_params = optuna_context.get_tuned_parameters(model_type=ml_model, x_data=training_x_data,
 																  y_data=training_y_data)
 			break
 		except ValueError:
